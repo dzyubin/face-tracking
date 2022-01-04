@@ -5,8 +5,6 @@ import mmcv, cv2
 from PIL import Image, ImageDraw
 from IPython import display
 
-# print(torch.__version__)
-
 # device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 # print('Running on device: {}'.format(device))
 
