@@ -1,17 +1,17 @@
 from facenet_pytorch import MTCNN
-import torch
+# import torch
 import numpy as np
 import mmcv, cv2
 from PIL import Image, ImageDraw
 from IPython import display
 
-print(torch.__version__)
+# print(torch.__version__)
 
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-print('Running on device: {}'.format(device))
+# device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+# print('Running on device: {}'.format(device))
 
 # since MTCNN is a collection of neural nets and other code, the device must be passed in the following way to enable copying of objects when needed internally.
-mtcnn = MTCNN(keep_all=True, device=device)
+mtcnn = MTCNN(keep_all=True, device='cpu')
 
 #loading a video with some faces in it. The mmcv PyPI package by mmlabs is used to read the video frames (it can be installed with pip install mmcv). Frames are then converted to PIL images
 video = mmcv.VideoReader('IMG_0413.mp4')
