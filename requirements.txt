@@ -1,6 +1,7 @@
 # facenet-pytorch==2.5.2
 mmcv==1.4.2
 # torch
-# numpy
-# opencv-python
-# flask
+numpy
+opencv-python
+flask
+tensorflow
