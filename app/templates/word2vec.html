@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            word2vec
+        </title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+        <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet" type= "text/css">
+
+    </head>
+    <body style="background-image: url('https://c4.wallpaperflare.com/wallpaper/37/315/751/the-simpsons-homer-simpson-bart-simpson-wallpaper-preview.jpg');">
+     
+    <div class="container" style="background: white; padding: 1rem; min-height: 90vh">
+      <nav>
+        <a class="btn btn-primary" href="{{url_for('Homepage')}}">Topic prediction</a>
+        <a class="btn btn-primary" href="http://perceptrn.pythonanywhere.com/">Movie classifier</a>
+      </nav>
+      <h1>word2vec</h1>
+      <div class="row">
+        <div class="col-sm-8">
+          <form id="form" class="form-inline row">
+            <div class="mb-3 col-sm-6">
+              <div class="input-group">
+                <!-- <label for="most_similar_to" style="background: white;">Most similar to:</label> -->
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="validatedInputGroupPrepend">Most similar to:</span>
+                </div>
+                <input name="most_similar_to" id="most_similar_to" type="text" class="form-control" placeholder="e.g. Homer">
+                <!-- <button id="get_most_similar" class="btn btn-primary">Go</button> -->
+                <div class="input-group-append">
+                   <button id="get_most_similar" class="btn btn-primary" type="button">Go</button>
+                </div>
+              </div>
+            </div>
+            <div class="mb-3 col-sm-6">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="validatedInputGroupPrepend">Similarity score:</span>
+                </div>
+                <input name="words_to_compare" id="words_to_compare" type="text" class="form-control" placeholder="e.g. Homer, Marge">
+                <!-- <button id="get_similarity" class="btn btn-primary">Go</button> -->
+                <div class="input-group-append">
+                   <button id="get_similarity_score" class="btn btn-primary" type="button">Go</button>
+                </div>
+              </div>
+              <!-- <div class="input-group is-invalid">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="validatedInputGroupCustomFile" required>
+                  <label class="custom-file-label" for="validatedInputGroupCustomFile">Choose file...</label>
+                </div>
+                <div class="input-group-append">
+                   <button class="btn btn-outline-secondary" type="button">Button</button>
+                </div>
+              </div> -->
+            </div>
+            <div id="most_similar_response" class="mb-3 col-sm-6 col"></div>
+            <div id="similarity_score_response" class="mb-3 col-sm-6 col" style="align-self: start;"></div>
+            <!-- <div class="form-group">
+                <label>Enter text to predict topic<br />Topics are: atheism, computer graphics, christianity, politics, medical science</label>
+                <input name="text_field" id="text_field" style="height: 200px;" type="text" class="form-control"
+                    placeholder="Enter text here">
+            </div> -->
+            <!-- <button id="button-a" type="button" class="btn btn-primary">
+              Submit
+              <div class="spinner-border" role="status" style="display: none;">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </button> -->
+          </form>
+        </div>
+        <!-- <div class="card col-sm-4" style="height: 100%; border: none;">
+          <div class="card-body" style="border-left: 1px solid;">word2vec</div>
+        </div> -->
+      </div>
+        <!-- <div class="card" style="width: 18rem; margin-top: 3rem;">
+          <div class="card-body">
+            <h5 class="card-title">Response</h5>
+            <p id="response" class="card-text">
+              No response yet...
+              <div class="spinner-border" role="status" style="display: none;">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </p>
+          </div>
+        </div> -->
+    </div>
+      <script>
+          /*$(document).ready(
+            function(){
+              $("#button-a").attr('disabled', true);
+              $("#text_field").keyup(
+                function(){
+                  if ($(this).val().length != 0)
+                    $("#button-a").attr('disabled', false);
+                  else
+                    $("#button-a").attr('disabled', true);
+                }
+              )
+            }
+          );
+
+          $("#button-a").click(
+            function(){
+              $('.spinner-border').css('display', 'block')
+              $.ajax({
+                url: "{{url_for('Prediction')}}",
+                method: 'post',
+                data: {
+                  text_field: $('#text_field').val()
+                }
+              })
+              .done(function(res) {
+                $('#response').text(res.prediction)
+              })
+              .fail(function(err) {
+                Swal.fire({
+                  icon: 'error',
+                  title: err.statusText || 'Error',
+                  showConfirmButton: true,
+                  timer: 20000
+                })
+              })
+              .always(function() {
+                $('.spinner-border').css('display', 'none')
+              })
+            }
+          );*/
+          $("#get_most_similar").click(
+            function(){
+              $('.spinner-border').css('display', 'block')
+              $.ajax({
+                url: "{{url_for('Getmostsimilar')}}",
+                method: 'post',
+                data: {
+                  most_similar_to: $('#most_similar_to').val()
+                }
+              })
+              .done(function(res) {
+                console.log(res)
+                var most_similar_string = ''
+                res.prediction.forEach(el => {
+                  console.log(el)
+                  most_similar_string += `<p>${el[0]}: ${el[1].toFixed(4)}</p>`
+                })
+                console.log(most_similar_string)
+                $('#most_similar_response').html(most_similar_string)
+              })
+              .fail(function(err) {
+                console.log(err)
+                Swal.fire({
+                  icon: 'error',
+                  title: err.responseText || err.statusText || 'Error',
+                  showConfirmButton: true,
+                  timer: 20000
+                })
+              })
+              .always(function() {
+                $('.spinner-border').css('display', 'none')
+              })
+            }
+          );
+          $("#get_similarity_score").click(
+            function(){
+              $('.spinner-border').css('display', 'block')
+              $('#similarity_score_response').html('')
+              // console.log($('#words_to_compare'))
+              $.ajax({
+                url: "{{url_for('Getsimilarity')}}",
+                method: 'post',
+                data: {
+                  words_to_compare: $('#words_to_compare').val()
+                }
+              })
+              .done(function(res) {
+                console.log(res)
+                var similarity_score = res.prediction
+                $('#similarity_score_response').html(parseFloat(similarity_score).toFixed(4))
+              })
+              .fail(function(err) {
+                console.log(err)
+                Swal.fire({
+                  icon: 'error',
+                  title: err.responseText || err.statusText || 'Error',
+                  showConfirmButton: true,
+                  timer: 20000
+                })
+              })
+              .always(function() {
+                $('.spinner-border').css('display', 'none')
+              })
+            }
+          );
+      </script>
+    </body>
+</html>
