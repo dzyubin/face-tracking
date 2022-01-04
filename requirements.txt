@@ -4,4 +4,5 @@ mmcv==1.4.2
 numpy
 opencv-python
 flask
-tensorflow
+# tensorflow
+mxnet
